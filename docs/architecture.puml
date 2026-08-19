@@ -1,0 +1,135 @@
+@startuml
+!define RECTANGLE class
+
+skinparam backgroundColor transparent
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam arrowColor #666666
+skinparam componentBackgroundColor White
+skinparam componentBorderColor #666666
+skinparam packageBackgroundColor #f8f9fa
+skinparam packageBorderColor #dee2e6
+
+' 레이아웃 방향 설정 - 백엔드 우선 구조
+!define LAYOUT top to bottom direction
+
+package "Cloud Services (Firebase)" <<Database>> {
+    auth -right-> storage
+    storage -right-> messaging
+    messaging -right-> functions
+    auth -down-> firestore
+    
+    component "Firebase Authentication" as auth
+    component "Firebase Storage" as storage  
+    component "Firebase Messaging" as messaging
+    component "Cloud Functions" as functions
+    
+    component "Firestore Database" as firestore {
+        users -right-> groups
+        groups -right-> products
+        products -right-> statistics
+        
+        component "Users Collection" as users
+        component "Groups Collection" as groups
+        component "Products Collection" as products
+        component "Statistics Collection" as statistics
+    }
+}
+
+package "External APIs" <<Rectangle>> {
+    mlkit -right-> scanner
+    scanner -right-> serp  
+    serp -right-> vision
+    vision -right-> groq
+    groq -down-> google_signin
+    
+    component "Google ML Kit" as mlkit {
+        component "Text Recognition" as text_recog
+    }
+    component "Mobile Scanner" as scanner {
+        component "QR/Barcode Detection" as barcode_detect
+    }
+    component "SERP API" as serp {
+        component "Product Search" as product_search
+    }
+    component "Google Cloud Vision API" as vision {
+        component "OCR Processing" as ocr
+    }
+    component "Groq AI API" as groq {
+        component "Data Post-processing" as postprocess
+    }
+    component "Google Sign-In" as google_signin
+}
+
+package "Mobile App (Flutter)" <<Node>> {
+    component "Flutter Framework" as framework {
+        dart -right-> widgets
+        widgets -right-> channels
+        
+        component "Dart Runtime" as dart
+        component "Widget System" as widgets
+        component "Platform Channels" as channels
+    }
+    
+    component "App Features" as flutter {
+        qr -right-> receipt
+        receipt -right-> stats
+        stats -down-> user_mgmt
+        user_mgmt -right-> push
+        
+        component "Barcode/QR Scanner" as qr
+        component "Receipt Recognition" as receipt  
+        component "Statistics UI" as stats
+        component "User Management" as user_mgmt
+        component "Push Notifications" as push
+    }
+    
+    framework -down-> flutter
+}
+
+package "Development Flow" <<Cloud>> {
+    dev -right-> github
+    github -right-> actions
+    
+    component "Developer" as dev
+    component "GitHub" as github  
+    component "GitHub Actions" as actions
+}
+
+' 논문용 계층적 아키텍처 플로우
+
+' 1. Infrastructure Layer (Cloud Services)
+' 최하위 인프라 계층
+
+' 2. Service Layer (External APIs) 
+' 인프라 위의 서비스 계층
+auth -down-> mlkit : "Authentication"
+firestore -down-> scanner : "Data Storage"
+storage -down-> serp : "File Storage"
+functions -down-> vision : "Serverless Processing"
+messaging -down-> groq : "Messaging"
+functions -down-> google_signin : "Backend Logic"
+
+' 3. Application Layer (Mobile App)
+' 서비스 위의 애플리케이션 계층
+mlkit -down-> framework : "ML Processing"
+scanner -down-> flutter : "Scanning Service"
+serp -down-> framework : "Search API"
+vision -down-> framework : "OCR Processing"
+groq -down-> flutter : "AI Post-processing"
+google_signin -down-> flutter : "OAuth"
+
+' 4. Development Process
+' 개발 프로세스 플로우
+actions -down-> flutter : "CI/CD Deploy"
+
+' Internal Framework Flow
+framework -down-> flutter : "Framework → Features"
+
+' Feature Interactions
+qr --> receipt : "Scan → Process"
+receipt --> stats : "Process → Display"
+stats --> user_mgmt : "Data → Management"
+user_mgmt --> push : "User → Notification"
+
+@enduml 

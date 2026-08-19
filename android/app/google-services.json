@@ -1,0 +1,124 @@
+{
+  "project_info": {
+    "project_number": "411579471229",
+    "project_id": "refrigerator-care",
+    "storage_bucket": "refrigerator-care.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411579471229:android:975110aeaa9728cca0e814",
+        "android_client_info": {
+          "package_name": "com.example.coldguard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411579471229-b36aek9v1f261uq1m27nltun7ils9ocn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coldguard",
+            "certificate_hash": "46364821f8efe3cb2b1fb72844bb28f6aa684cc8"
+          }
+        },
+        {
+          "client_id": "411579471229-isqa8gft0r8ctikpjstghf90e5q4v20p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coldguard",
+            "certificate_hash": "4484cb65c353fdfbf6031108c8faff47be8a2ad6"
+          }
+        },
+        {
+          "client_id": "411579471229-lv8nn08sn2t81amt9bdbg92o7v244l2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coldguard",
+            "certificate_hash": "04d4db689a0dae24da181a1c3fa95c1cf866eed5"
+          }
+        },
+        {
+          "client_id": "411579471229-o6rvpgepqbtm5h29h8slv3elc4r1h8mm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coldguard",
+            "certificate_hash": "5938931dcbe3015432061be423532df3e5628595"
+          }
+        },
+        {
+          "client_id": "411579471229-s3sapncmo4drgs1ejn9b8nukdnb5r20a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0AK-im1trApvzpxYr2uNbHuWs9YyLy_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411579471229-s3sapncmo4drgs1ejn9b8nukdnb5r20a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411579471229:android:a3ec816e8a306a82a0e814",
+        "android_client_info": {
+          "package_name": "com.example.refrigerator_care"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411579471229-dtbqqemg83ndrfi16jqd29jceokhlnn4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.refrigerator_care",
+            "certificate_hash": "04d4db689a0dae24da181a1c3fa95c1cf866eed5"
+          }
+        },
+        {
+          "client_id": "411579471229-hsj0pdmd6rj064fpp3s1anrblti0ndhu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.refrigerator_care",
+            "certificate_hash": "4484cb65c353fdfbf6031108c8faff47be8a2ad6"
+          }
+        },
+        {
+          "client_id": "411579471229-nva8ivnjv7jkrdi6i4e1evmda2s2nese.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.refrigerator_care",
+            "certificate_hash": "5938931dcbe3015432061be423532df3e5628595"
+          }
+        },
+        {
+          "client_id": "411579471229-s3sapncmo4drgs1ejn9b8nukdnb5r20a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0AK-im1trApvzpxYr2uNbHuWs9YyLy_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411579471229-s3sapncmo4drgs1ejn9b8nukdnb5r20a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

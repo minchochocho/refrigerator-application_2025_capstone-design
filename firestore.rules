@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 사용자 문서 - 자신의 문서만 읽기/쓰기 가능
+    match /Users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 방 문서 - 인증된 사용자만 읽기 가능, 방 생성자만 쓰기 가능
+    match /Rooms/{roomId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.room_creator;
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.room_creator || 
+         request.auth.uid in resource.data.memberIds);
+      allow delete: if request.auth != null && request.auth.uid == resource.data.room_creator;
+    }
+    
+    // 방 멤버 문서 - 관련된 사용자만 접근 가능
+    match /RoomUser/{membershipId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.user_id);
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.user_id;
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.user_id);
+      allow delete: if request.auth != null && 
+        (request.auth.uid == resource.data.user_id);
+    }
+    
+    // 냉장고 문서 - 멤버만 접근 가능 (방장도 관리 가능)
+    match /Refrigerators/{refrigeratorId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.owner_id || 
+         request.auth.uid in resource.data.member_ids);
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.owner_id;
+      allow update: if request.auth != null && 
+        (
+          request.auth.uid == resource.data.owner_id || 
+          request.auth.uid in resource.data.member_ids ||
+          (
+            resource.data.room_id != null &&
+            request.auth.uid == get(/databases/$(database)/documents/Rooms/$(resource.data.room_id)).data.room_creator
+          )
+        );
+      allow delete: if request.auth != null && 
+        (
+          request.auth.uid == resource.data.owner_id ||
+          (
+            resource.data.room_id != null &&
+            request.auth.uid == get(/databases/$(database)/documents/Rooms/$(resource.data.room_id)).data.room_creator
+          )
+        );
+      
+      // 냉장고 칸 문서 - 냉장고 멤버 또는 방장 접근 가능
+      match /compartments/{compartmentId} {
+        allow read, write: if request.auth != null && 
+          (
+            request.auth.uid == get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.owner_id ||
+            request.auth.uid in get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.member_ids ||
+            (
+              get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.room_id != null &&
+              request.auth.uid == get(/databases/$(database)/documents/Rooms/$(get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.room_id)).data.room_creator
+            )
+          );
+        
+        // 재료 문서 - 냉장고 멤버 또는 방장 접근 가능
+        match /ingredients/{ingredientId} {
+          allow read, write: if request.auth != null && 
+            (
+              request.auth.uid == get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.owner_id ||
+              request.auth.uid in get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.member_ids ||
+              (
+                get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.room_id != null &&
+                request.auth.uid == get(/databases/$(database)/documents/Rooms/$(get(/databases/$(database)/documents/Refrigerators/$(refrigeratorId)).data.room_id)).data.room_creator
+              )
+            );
+        }
+      }
+    }
+    
+    // 바코드 문서 - 사용자별 개인 데이터
+    match /users/{userId}/barcodes/{barcodeId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 제품 정보 - 모든 인증된 사용자가 읽기 가능, 생성자만 쓰기 가능
+    match /products/{productId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+    
+    // 기본 거부 규칙
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

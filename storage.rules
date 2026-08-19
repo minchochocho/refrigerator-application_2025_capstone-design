@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidImageUpload() {
+      return request.resource != null
+        && request.resource.contentType.matches('image/.*')
+        && request.resource.size <= 20 * 1024 * 1024;
+    }
+
+    // Profile images are stored under the authenticated user's UID.
+    // Other signed-in users may read them because room members can view
+    // each other's profile images.
+    match /profile_images/{uid} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn()
+        && request.auth.uid == uid
+        && isValidImageUpload();
+      allow delete: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Barcode images use a content hash as the filename and do not include
+    // an owner UID in the existing path structure. Keep access authenticated
+    // while validating every new or updated object as an image.
+    match /images/{fileName} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidImageUpload();
+      allow delete: if isSignedIn();
+    }
+
+    // Temporary fallback uploads use timestamp-based filenames and likewise
+    // have no owner UID in their existing path.
+    match /temp/{fileName} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidImageUpload();
+      allow delete: if isSignedIn();
+    }
+
+    // Ingredient edit images are shared by users who can access the related
+    // refrigerator. The current Storage path contains only ingredientId,
+    // which is not enough to resolve its refrigerator/room membership here.
+    // Therefore access is limited to signed-in users without guessing a
+    // Firestore path that the current data model does not expose.
+    match /ingredients_by_id/{ingredientId}/{fileName} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidImageUpload();
+      allow delete: if isSignedIn();
+    }
+
+    // Deny every Storage path not explicitly used by the application.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
